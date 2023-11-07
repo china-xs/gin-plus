@@ -19,7 +19,7 @@ import (
 
 const (
 	ginPkg           = protogen.GoImportPath("github.com/gin-gonic/gin")
-	transportHttpGin = protogen.GoImportPath("github.com/china-xs/ginplus/transport/http")
+	transportHttpGin = protogen.GoImportPath("github.com/china-xs/gin-plus/transport/http")
 )
 
 var methodSets = make(map[string]int)
@@ -52,10 +52,6 @@ func generateFileContent(gen *protogen.Plugin, file *protogen.File, g *protogen.
 		ginPkg.Ident(""),
 		transportHttpGin.Ident(""),
 	)
-	//g.P("var _ = new(", contextPackage.Ident("Context"), ")")
-	//g.P("var _ = ", bindingPackage.Ident("EncodeURL"))
-	//g.P("const _ = ", transportHTTPPackage.Ident("SupportPackageIsVersion1"))
-	//g.P()
 
 	for _, service := range file.Services {
 		genService(gen, file, g, service, omitempty)

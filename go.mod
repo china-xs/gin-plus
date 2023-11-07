@@ -1,4 +1,4 @@
-module github.com/china-xs/ginplus
+module github.com/china-xs/gin-plus
 
 go 1.20
 
