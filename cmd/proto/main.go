@@ -6,8 +6,8 @@
 package main
 
 import (
-	"github.com/china-xs/ginplus/cmd/proto/add"
-	"github.com/china-xs/ginplus/cmd/proto/server"
+	"github.com/china-xs/gin-plus/cmd/proto/add"
+	"github.com/china-xs/gin-plus/cmd/proto/server"
 	"github.com/spf13/cobra"
 	"log"
 )

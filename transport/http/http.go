@@ -7,9 +7,9 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
-	"net"
 	"net/http"
 )
 
@@ -26,37 +26,32 @@ type Server struct {
 	enc     EncodeResponseFunc // 定义返回结构
 	ms      []Middleware       // 全局中间价
 	filter  []gin.HandlerFunc  // gin 全局中间件， 执行比ms 早
-	ops     []ServerOption
 }
 
-// Start http server start
-func (this *Server) Start(ctx context.Context) (err error) {
-	r := gin.New()
+func NewHttpServer(opts ...ServerOption) *Server {
 	srv := &Server{
-		Engine: r,
+		Engine: gin.Default(),
 		addr:   "0.0.0.0:8080",
 		dec:    DefaultRequestDecoder,
 		enc:    DefaultResponseEncoder,
 	}
-	for _, o := range this.ops {
-		o(srv)
+	for _, opt := range opts {
+		opt(srv)
 	}
-	// use gin middleware
 	if len(srv.filter) > 0 {
 		srv.Engine.Use(srv.filter...)
 	}
+	return srv
+}
+
+// Start http server start
+func (this *Server) Start(ctx context.Context) (err error) {
 	s := http.Server{
 		Addr:    this.addr,
 		Handler: this,
-		ConnContext: func(ctx context.Context, c net.Conn) context.Context {
-			ctx = context.WithValue(ctx, `debug`, `sss`)
-			return ctx
-		},
 	}
+	fmt.Println("server port:", this.addr)
 	err = s.ListenAndServe()
-	if errors.Is(err, http.ErrServerClosed) {
-		return nil
-	}
 	if errors.Is(err, http.ErrServerClosed) {
 		return nil
 	}

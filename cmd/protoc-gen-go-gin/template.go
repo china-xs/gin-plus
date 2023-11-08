@@ -76,7 +76,7 @@ func _{{$svrType}}_{{.Name}}{{.Num}}_Gin_Handler(s *http.Server,srv {{$svrType}}
 			return
 		}
 		c.Set(http.OperationKey, "/{{$svrName}}/{{.Name}}")
-		h := s.Middleware(func(c *gin.Context, req interface{}) (interface{}, error) {
+		h := s.Middleware(func(c *gin.Context, req any) (any, error) {
 			return srv.{{.Name}}(c, req.(*{{.Request}}))
 		})
 		out, err := h(c, &in)
