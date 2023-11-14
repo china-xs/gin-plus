@@ -49,19 +49,22 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	var (
-		pkg string
-		res []*Service
+		pkg, pkgName string
+		res          []*Service
 	)
 	proto.Walk(definition,
 		proto.WithOption(func(o *proto.Option) {
 			if o.Name == "go_package" {
-				pkg = strings.Split(o.Constant.Source, ";")[0]
+				pkgs := strings.Split(o.Constant.Source, ";")
+				pkg = pkgs[0]
+				pkgName = pkgs[1]
 			}
 		}),
 		proto.WithService(func(s *proto.Service) {
 			cs := &Service{
-				Package: pkg,
-				Service: s.Name,
+				Package:     pkg,
+				PackageName: pkgName,
+				Service:     s.Name,
 			}
 			for _, e := range s.Elements {
 				r, ok := e.(*proto.RPC)

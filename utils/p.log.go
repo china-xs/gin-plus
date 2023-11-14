@@ -7,6 +7,7 @@ package utils
 
 import (
 	"context"
+	"fmt"
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
@@ -43,7 +44,7 @@ func NewLog(v *viper.Viper) (l *zap.Logger, fc func(), err error) {
 	}
 	// 按照ip 处理 待实现
 	if o.IsContainer {
-
+		fmt.Println(`debug`)
 	}
 
 	write := &lumberjack.Logger{ // concurrent-safed
@@ -60,8 +61,6 @@ func NewLog(v *viper.Viper) (l *zap.Logger, fc func(), err error) {
 
 	// file core 采用jsonEncoder
 	cores := make([]zapcore.Core, 0, 2)
-	//var cfg zap.Config
-	//cfg.Build()
 	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:       "time",
 		LevelKey:      "level",
@@ -110,6 +109,10 @@ func WithCtx(ctx context.Context, log *zap.Logger) *zap.Logger {
 
 type Log struct {
 	lg *zap.Logger
+}
+
+func NewWLog(lg *zap.Logger) *Log {
+	return &Log{lg: lg}
 }
 
 func (this Log) WithCtx(ctx context.Context) *zap.Logger {

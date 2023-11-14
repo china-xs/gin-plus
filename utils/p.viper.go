@@ -11,6 +11,7 @@ import (
 
 // NewViper 初始化viper
 func NewViper(path string) (v *viper.Viper, err error) {
+	v = viper.New()
 	v.AddConfigPath(".")
 	v.SetConfigFile(string(path))
 	if err = v.ReadInConfig(); err != nil {

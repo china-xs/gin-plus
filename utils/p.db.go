@@ -44,6 +44,7 @@ type GormOpts struct {
 	Level                  logger.LogLevel `yaml:"level"`
 	SlowThreshold          time.Duration   `yaml:"slowTime"`               // 慢查询阀值
 	SkipDefaultTransaction bool            `yaml:"skipDefaultTransaction"` // true 开启禁用事物，大约 30%+ 性能提升
+	SingularTable          bool            `yaml:"singularTable"`
 }
 
 // NewGorm gorm v 基础配置 lg gorm 日志文件
@@ -52,14 +53,15 @@ func NewGorm(v *viper.Viper, lg logger.Interface) (db *gorm.DB, fc func(), err e
 		c      = new(GormOpts)
 		config *gorm.Config
 	)
-	if err = v.UnmarshalKey("log", c); err != nil {
+	if err = v.UnmarshalKey("db", c); err != nil {
 		return
 	}
+
 	config = &gorm.Config{
 		SkipDefaultTransaction: c.SkipDefaultTransaction,
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   c.PreFix, // 表名前缀，`User` 的表名应该是 `t_users`
-			SingularTable: true,     // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `t_user`
+			TablePrefix:   c.PreFix,        // 表名前缀，`User` 的表名应该是 `t_users`
+			SingularTable: c.SingularTable, // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `t_user`
 		},
 		NowFunc: func() time.Time {
 			return time.Now().Local()

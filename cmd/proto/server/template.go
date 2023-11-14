@@ -12,7 +12,7 @@ import (
 
 var serviceTemplate = `
 {{- /* delete empty line */ -}}
-package service
+package {{.PackageName}}
 
 import (
 	{{- if .UseContext }}
@@ -40,7 +40,7 @@ func New{{ .Service }}Service() *{{ .Service }}Service {
 {{ range .Methods }}
 {{- if eq .Type 1 }}
 func (s *{{ .Service }}Service) {{ .Name }}(c *gin.Context, req {{ if eq .Request $s1 }}*emptypb.Empty
-{{ else }}*pb.{{ .Request }}{{ end }}) ({{ if eq .Reply $s1 }}*emptypb.Empty{{ else }}*pb.{{ .Reply }}{{ end }}, error) {
+{{ else }}*pb.{{ .Request }}{{ end }}) (reply {{ if eq .Reply $s1 }}*emptypb.Empty{{ else }}*pb.{{ .Reply }}{{ end }}, err error) {
 	return {{ if eq .Reply $s1 }}&emptypb.Empty{}{{ else }}&pb.{{ .Reply }}{}{{ end }}, nil
 }
 
@@ -102,6 +102,7 @@ const (
 // Service is a proto service.
 type Service struct {
 	Package     string
+	PackageName string
 	Service     string
 	Methods     []*Method
 	GoogleEmpty bool
