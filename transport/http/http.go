@@ -15,31 +15,29 @@ import (
 
 const OperationKey = "operation"
 
-// ServerOption is an HTTP server option.
-type ServerOption func(*Server)
-
 type Server struct {
 	*gin.Engine
 	isDebug bool               // 测试环境
-	addr    string             // default 0.0.0.0:8080
+	address string             // default 0.0.0.0:8080
 	dec     DecodeRequestFunc  // 请求参数绑定结构
 	enc     EncodeResponseFunc // 定义返回结构
 	ms      []Middleware       // 全局中间价
-	filter  []gin.HandlerFunc  // gin 全局中间件， 执行比ms 早
+	filters []gin.HandlerFunc  // gin 全局中间件， 执行比ms 早
 }
 
 func NewHttpServer(opts ...ServerOption) *Server {
 	srv := &Server{
-		Engine: gin.Default(),
-		addr:   "0.0.0.0:8080",
-		dec:    DefaultRequestDecoder,
-		enc:    DefaultResponseEncoder,
+		Engine:  gin.Default(),
+		address: "0.0.0.0:8080",
+		dec:     DefaultRequestDecoder,
+		enc:     DefaultResponseEncoder,
 	}
 	for _, opt := range opts {
 		opt(srv)
 	}
-	if len(srv.filter) > 0 {
-		srv.Engine.Use(srv.filter...)
+	//srv.Engine.
+	if len(srv.filters) > 0 {
+		srv.Engine.Use(srv.filters...)
 	}
 	return srv
 }
@@ -47,10 +45,10 @@ func NewHttpServer(opts ...ServerOption) *Server {
 // Start http server start
 func (this *Server) Start(ctx context.Context) (err error) {
 	s := http.Server{
-		Addr:    this.addr,
+		Addr:    this.address,
 		Handler: this,
 	}
-	fmt.Println("server port:", this.addr)
+	fmt.Println("server port:", this.address)
 	err = s.ListenAndServe()
 	if errors.Is(err, http.ErrServerClosed) {
 		return nil

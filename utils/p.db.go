@@ -98,7 +98,7 @@ func NewGormLog(v *viper.Viper, l *zap.Logger) (res logger.Interface, err error)
 	var (
 		c = new(GormOpts)
 	)
-	if err = v.UnmarshalKey("log", c); err != nil {
+	if err = v.UnmarshalKey("db", c); err != nil {
 		return
 	}
 	res = &GormLog{

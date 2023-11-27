@@ -46,7 +46,9 @@ func NewLog(v *viper.Viper) (l *zap.Logger, fc func(), err error) {
 	if o.IsContainer {
 		fmt.Println(`debug`)
 	}
-
+	if level, err = zap.ParseAtomicLevel(o.Level); err != nil {
+		return
+	}
 	write := &lumberjack.Logger{ // concurrent-safed
 		Filename:   o.Filename,   // 文件路径
 		MaxSize:    o.MaxSize,    // MaxSize 兆字节
