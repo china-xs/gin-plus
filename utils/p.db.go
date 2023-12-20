@@ -32,19 +32,19 @@ var (
 )
 
 type GormOpts struct {
-	Host                   string          `yaml:"host"`     // ip
-	Port                   int32           `yaml:"port"`     // 端口
-	Database               string          `yaml:"database"` // 表名称
-	User                   string          `yaml:"user"`     // 用户名
-	Pwd                    string          `yaml:"pwd"`      // 密码
-	PreFix                 string          `yaml:"prefix"`   // 表前缀
-	MaxIdleConn            int             `yaml:"maxIdleConn"`
-	MaxOpenConn            int             `yaml:"maxOpenConn"`     // 最大链接池数
-	ConnMaxLifetime        time.Duration   `yaml:"connMaxLifetime"` // 单个链接有效时长
-	Level                  logger.LogLevel `yaml:"level"`
-	SlowThreshold          time.Duration   `yaml:"slowTime"`               // 慢查询阀值
-	SkipDefaultTransaction bool            `yaml:"skipDefaultTransaction"` // true 开启禁用事物，大约 30%+ 性能提升
-	SingularTable          bool            `yaml:"singularTable"`
+	Host                   string        `yaml:"host"`     // ip
+	Port                   int32         `yaml:"port"`     // 端口
+	Database               string        `yaml:"database"` // 表名称
+	User                   string        `yaml:"user"`     // 用户名
+	Pwd                    string        `yaml:"pwd"`      // 密码
+	PreFix                 string        `yaml:"prefix"`   // 表前缀
+	MaxIdleConn            int           `yaml:"maxIdleConn"`
+	MaxOpenConn            int           `yaml:"maxOpenConn"`     // 最大链接池数
+	ConnMaxLifetime        time.Duration `yaml:"connMaxLifetime"` // 单个链接有效时长
+	Level                  string        `yaml:"level"`
+	SlowThreshold          time.Duration `yaml:"slowTime"`               // 慢查询阀值
+	SkipDefaultTransaction bool          `yaml:"skipDefaultTransaction"` // true 开启禁用事物，大约 30%+ 性能提升
+	SingularTable          bool          `yaml:"singularTable"`
 }
 
 // NewGorm gorm v 基础配置 lg gorm 日志文件
@@ -93,7 +93,7 @@ func NewGorm(v *viper.Viper, lg logger.Interface) (db *gorm.DB, fc func(), err e
 	return db, cleanup, nil
 }
 
-// NewGormLog 待完成,日志没有添加trace_id
+// NewGormLog 注意等级, 不配置表示沉默 trace 不记录任何日志
 func NewGormLog(v *viper.Viper, l *zap.Logger) (res logger.Interface, err error) {
 	var (
 		c = new(GormOpts)
@@ -103,16 +103,30 @@ func NewGormLog(v *viper.Viper, l *zap.Logger) (res logger.Interface, err error)
 	}
 	res = &GormLog{
 		log:           l,
-		logLevel:      c.Level,
+		logLevel:      parseGormLevel(c.Level),
 		slowThreshold: c.SlowThreshold,
+	}
+	return
+}
+
+func parseGormLevel(text string) (level logger.LogLevel) {
+	switch text {
+	case `debug`, "DEBUG", `info`, `INFO`:
+		level = logger.Info
+	case `warn`, `WARN`:
+		level = logger.Warn
+	case `error`, `ERROR`, `dpanic`, `DPANIC`, `panic`, `PANIC`, `fatal`, `FATAL`:
+		level = logger.Error
+	default:
+		level = logger.Silent
 	}
 	return
 }
 
 type GormLog struct {
 	log           *zap.Logger
-	logLevel      logger.LogLevel
-	slowThreshold time.Duration // 慢查询阀值
+	logLevel      logger.LogLevel // gorm/logger LogLevel
+	slowThreshold time.Duration   // 慢查询阀值
 }
 
 func (l *GormLog) WithCtx(ctx context.Context) *zap.Logger {
