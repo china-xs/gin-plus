@@ -8,7 +8,7 @@ package http
 import "github.com/gin-gonic/gin"
 
 // Handler defines the handler invoked by Middleware.
-type Handler func(c *gin.Context, req interface{}) (any, error)
+type Handler func(c *gin.Context, req any) (any, error)
 
 // Middleware is HTTP/gRPC transport middleware.
 type Middleware func(Handler) Handler

@@ -43,6 +43,10 @@ var response struct {
 // DefaultResponseEncoder encodes the object to the HTTP response.
 func DefaultResponseEncoder(c *gin.Context, obj any, err error) {
 	if err != nil {
+		c.JSON(http.StatusBadRequest, map[string]any{
+			`message`: err.Error(),
+			`code`:    http.StatusBadRequest,
+		})
 		//coder := errors.ParseCoder(err)
 		//c.JSON(coder.Code(), map[string]any{
 		//	`message`: coder.String(),
