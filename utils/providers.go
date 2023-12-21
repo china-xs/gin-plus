@@ -18,4 +18,6 @@ var ProviderSet = wire.NewSet(
 	NewGorm,
 	NewGormLog,
 	NewRedis,
+	NewJwtAuth,
+	NewJWTOps,
 )

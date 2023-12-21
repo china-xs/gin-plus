@@ -6,8 +6,10 @@
 package http
 
 import (
+	"github.com/china-xs/errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"go.opentelemetry.io/otel/trace"
 	"net/http"
 )
 
@@ -42,21 +44,25 @@ var response struct {
 
 // DefaultResponseEncoder encodes the object to the HTTP response.
 func DefaultResponseEncoder(c *gin.Context, obj any, err error) {
+	var traceId string
+	if span := trace.SpanContextFromContext(c.Request.Context()); span.HasTraceID() {
+		traceId = span.TraceID().String()
+	}
 	if err != nil {
-		c.JSON(http.StatusBadRequest, map[string]any{
-			`message`: err.Error(),
-			`code`:    http.StatusBadRequest,
+		coder := errors.ParseCoder(err)
+		c.JSON(coder.HTTPStatus(), map[string]any{
+			`message`:  coder.String(),
+			`code`:     coder.Code(),
+			`reason`:   coder.Reference(),
+			`trace_id`: traceId,
 		})
-		//coder := errors.ParseCoder(err)
-		//c.JSON(coder.Code(), map[string]any{
-		//	`message`: coder.String(),
-		//	`code`:    coder.Code(),
-		//})
+
 		return
 	}
 	c.JSON(http.StatusOK, map[string]any{
-		`message`: `ok`,
-		`code`:    http.StatusOK,
-		`data`:    obj,
+		`message`:  `ok`,
+		`code`:     http.StatusOK,
+		`data`:     obj,
+		`trace_id`: traceId,
 	})
 }
