@@ -6,10 +6,10 @@
 package http
 
 import (
+	"github.com/china-xs/errors"
 	"github.com/china-xs/gin-plus/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/kataras/i18n"
-	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"log"
 	"strings"
@@ -25,7 +25,8 @@ func MwValidator() Middleware {
 		return func(c *gin.Context, req interface{}) (reply any, err error) {
 			if v, ok := req.(validator); ok {
 				if err = v.Validate(); err != nil {
-					return nil, errors.WithMessage(err, `Bad Request`)
+					err = errors.WithCode(ErrValidate, `Bad Request`)
+					return
 				}
 			}
 			return handler(c, req)
@@ -64,7 +65,8 @@ func MwValidator2I18n(I18n *i18n.I18n, lg *zap.Logger) Middleware {
 						zap.String("i18nKey", i18nKey),
 						zap.String("msg", msg),
 						zap.String("errors", err.Error()))
-					return nil, errors.New(msg)
+					err = errors.WithCode(ErrValidate, msg)
+					return
 				}
 			}
 			return handler(c, req)
