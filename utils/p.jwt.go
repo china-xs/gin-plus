@@ -23,7 +23,7 @@ var (
 )
 
 type (
-	Options struct {
+	JwtOpts struct {
 		Secret    string   `yaml:"secret"`
 		Path      []string `yaml:"path"`
 		Prefix    []string `yaml:"prefix"`
@@ -38,10 +38,10 @@ type (
 	}
 )
 
-func NewJWTOps(v *viper.Viper) (*Options, error) {
+func NewJWTOps(v *viper.Viper) (*JwtOpts, error) {
 	var (
 		err error
-		o   = new(Options)
+		o   = new(JwtOpts)
 	)
 
 	if err = v.UnmarshalKey("jwt", o); err != nil {
@@ -50,7 +50,7 @@ func NewJWTOps(v *viper.Viper) (*Options, error) {
 	return o, err
 }
 
-func NewJwtAuth(o *Options) *JwtAuth {
+func NewJwtAuth(o *JwtOpts) *JwtAuth {
 	j := &JwtAuth{
 		secret:        "",
 		prefixPath:    make([]string, 0),
