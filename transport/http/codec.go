@@ -54,7 +54,7 @@ func DefaultResponseEncoder(c *gin.Context, obj any, err error) {
 			code = coder.Code()
 		}
 		c.JSON(coder.HTTPStatus(), map[string]any{
-			`message`:  message,
+			`msg`:      message,
 			`code`:     code,
 			`reason`:   reason,
 			`trace_id`: traceId,
@@ -62,7 +62,7 @@ func DefaultResponseEncoder(c *gin.Context, obj any, err error) {
 		return
 	}
 	c.JSON(http.StatusOK, map[string]any{
-		`message`:  `ok`,
+		`msg`:      `ok`,
 		`code`:     0,
 		`data`:     obj,
 		`trace_id`: traceId,
