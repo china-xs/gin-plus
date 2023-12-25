@@ -48,6 +48,7 @@ func DefaultResponseEncoder(c *gin.Context, obj any, err error) {
 		var code int
 		if coder.Code() == 1 {
 			message = err.Error()
+			code = 1
 		} else {
 			message = coder.String()
 			reason = coder.Reference()
