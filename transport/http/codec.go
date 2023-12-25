@@ -36,12 +36,6 @@ func DefaultRequestDecoder(c *gin.Context, v any) (err error) {
 	return
 }
 
-var response struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Data    any    `json:"data"`
-}
-
 // DefaultResponseEncoder encodes the object to the HTTP response.
 func DefaultResponseEncoder(c *gin.Context, obj any, err error) {
 	var traceId string
@@ -50,13 +44,21 @@ func DefaultResponseEncoder(c *gin.Context, obj any, err error) {
 	}
 	if err != nil {
 		coder := errors.ParseCoder(err)
+		var message, reason string
+		var code int
+		if coder.Code() == 1 {
+			message = err.Error()
+		} else {
+			message = coder.String()
+			reason = coder.Reference()
+			code = coder.Code()
+		}
 		c.JSON(coder.HTTPStatus(), map[string]any{
-			`message`:  coder.String(),
-			`code`:     coder.Code(),
-			`reason`:   coder.Reference(),
+			`message`:  message,
+			`code`:     code,
+			`reason`:   reason,
 			`trace_id`: traceId,
 		})
-
 		return
 	}
 	c.JSON(http.StatusOK, map[string]any{
