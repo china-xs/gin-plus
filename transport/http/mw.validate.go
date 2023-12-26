@@ -65,7 +65,7 @@ func MwValidator2I18n(I18n *i18n.I18n, lg *zap.Logger) Middleware {
 						zap.String("i18nKey", i18nKey),
 						zap.String("msg", msg),
 						zap.String("errors", err.Error()))
-					err = errors.WithCode(ErrValidate, msg)
+					err = errors.WrapC(errors.NewCustom(msg), ErrValidate, ``)
 					return
 				}
 			}

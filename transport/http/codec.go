@@ -45,16 +45,22 @@ func DefaultResponseEncoder(c *gin.Context, obj any, err error) {
 	if err != nil {
 		coder := errors.ParseCoder(err)
 		var message, reason string
-		var code int
+		var code, httpInt int
 		if coder.Code() == 1 {
 			message = err.Error()
 			code = 1
+			httpInt = 200
 		} else {
 			message = coder.String()
 			reason = coder.Reference()
 			code = coder.Code()
+			httpInt = coder.HTTPStatus()
 		}
-		c.JSON(coder.HTTPStatus(), map[string]any{
+		errCause := errors.Cause(err)
+		if e, ok := errCause.(*errors.CustomErr); ok {
+			message = e.Error()
+		}
+		c.JSON(httpInt, map[string]any{
 			`msg`:      message,
 			`code`:     code,
 			`reason`:   reason,

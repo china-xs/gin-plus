@@ -7,6 +7,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"go/ast"
@@ -324,14 +325,17 @@ func (v *Value) String() string {
 
 // ParseComment parse comment to http code and error code description.
 func (v *Value) ParseComment() (string, string) {
-	reg := regexp.MustCompile(`\w\s*-\s*(\d{3})\s*:\s*([A-Z].*)\s*\.\n*`)
+	//reg := regexp.MustCompile(`\w\s*-\s*(\d{3})\s*:\s*([A-Z].*)\s*\.\n*`)
+	reg := regexp.MustCompile(`\w\s*-\s*(\d{3})\s*[:：]\s*([\p{Han}A-Za-z_].*)\s*\.\n*`)
 	if !reg.MatchString(v.comment) {
 		log.Printf("constant '%s' have wrong comment format, register with 500 as default", v.originalName)
 
 		return "500", "Internal server error"
 	}
-
+	log.Printf("comment:%v\n", v.comment)
 	groups := reg.FindStringSubmatch(v.comment)
+	buf, _ := json.Marshal(groups)
+	log.Printf("groups:%s\n", buf)
 	if len(groups) != 3 {
 		return "500", "Internal server error"
 	}
