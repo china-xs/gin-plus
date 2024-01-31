@@ -3,7 +3,7 @@ module github.com/china-xs/gin-plus
 go 1.20
 
 require (
-	github.com/china-xs/errors v0.0.0-20231226024423-29b5a925d1d7
+	github.com/china-xs/errors v0.0.0-20240131063643-bdbbc4fb6a80
 	github.com/emicklei/proto v1.12.2
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v4 v4.5.0

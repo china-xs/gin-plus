@@ -57,6 +57,8 @@ github.com/china-xs/errors v0.0.0-20231226024035-c9b6de1986cd h1:QSCZVmUS0GDH6b9
 github.com/china-xs/errors v0.0.0-20231226024035-c9b6de1986cd/go.mod h1:LydAHsgMODz8xjXrQrH0JY/Sg+jTYC3VhdFrHXobnaQ=
 github.com/china-xs/errors v0.0.0-20231226024423-29b5a925d1d7 h1:7BNKzxHuejaEPG0MSY5qmPRw0oVs8wVZJAbOUmBPtfQ=
 github.com/china-xs/errors v0.0.0-20231226024423-29b5a925d1d7/go.mod h1:LydAHsgMODz8xjXrQrH0JY/Sg+jTYC3VhdFrHXobnaQ=
+github.com/china-xs/errors v0.0.0-20240131063643-bdbbc4fb6a80 h1:pT6iwXJ7yqvmpvIJ2sp/Uz6wV3cbWMx0Vz6kFnf2iq8=
+github.com/china-xs/errors v0.0.0-20240131063643-bdbbc4fb6a80/go.mod h1:LydAHsgMODz8xjXrQrH0JY/Sg+jTYC3VhdFrHXobnaQ=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=

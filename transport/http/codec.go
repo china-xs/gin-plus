@@ -59,6 +59,7 @@ func DefaultResponseEncoder(c *gin.Context, obj any, err error) {
 		errCause := errors.Cause(err)
 		if e, ok := errCause.(*errors.CustomErr); ok {
 			message = e.Error()
+			code = e.Code()
 		}
 		c.JSON(httpInt, map[string]any{
 			`msg`:      message,
