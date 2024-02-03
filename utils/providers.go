@@ -20,4 +20,5 @@ var ProviderSet = wire.NewSet(
 	NewRedis,
 	NewJwtAuth,
 	NewJWTOps,
+	NewCrypt, // 加解密 对手机号号码需要做隐私改造用
 )
