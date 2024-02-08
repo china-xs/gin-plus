@@ -38,7 +38,7 @@ func NewCryptByKey(key string) *Crypt {
 // AesEn2Str aes str 加密
 func (this *Crypt) AesEn2Str(str string) (result string, err error) {
 	var buf []byte
-	if buf, err = crypt2go.AesDecrypt([]byte(str), this.key); err != nil {
+	if buf, err = crypt2go.AesEncrypt([]byte(str), this.key); err != nil {
 		return
 	}
 	result = base64.StdEncoding.EncodeToString(buf)
