@@ -14,6 +14,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -48,6 +49,12 @@ func NewLog(v *viper.Viper) (l *zap.Logger, fc func(), err error) {
 	}
 	if level, err = zap.ParseAtomicLevel(o.Level); err != nil {
 		return
+	}
+	// 首个文件需要 创建权限 644
+	if _, err1 := os.Stat(o.Filename); os.IsNotExist(err1) {
+		if err1 = os.MkdirAll(filepath.Dir(o.Filename), 0755); err1 == nil {
+			_, err1 = os.OpenFile(o.Filename, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
+		}
 	}
 	write := &lumberjack.Logger{ // concurrent-safed
 		Filename:   o.Filename,   // 文件路径
