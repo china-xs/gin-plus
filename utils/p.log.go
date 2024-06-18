@@ -116,6 +116,16 @@ func WithCtx(ctx context.Context, log *zap.Logger) *zap.Logger {
 	return log.With(fields...)
 }
 
+// TraceCtx 异步执行,链路最终 去除超时机制
+func TraceCtx(ctx context.Context) context.Context {
+	span := trace.SpanContextFromContext(ctx)
+	ctx = context.Background()
+	spanCtx := trace.SpanContextFromContext(ctx)
+	spanCtx = spanCtx.WithTraceID(span.TraceID())
+	ctx = trace.ContextWithRemoteSpanContext(ctx, spanCtx)
+	return ctx
+}
+
 type Log struct {
 	lg *zap.Logger
 }
